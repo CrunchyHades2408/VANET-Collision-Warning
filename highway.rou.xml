@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+
+    <vType id="car"
+           vClass="passenger"
+           accel="2.6"
+           decel="4.5"
+           emergencyDecel="9.0"
+           length="5"
+           minGap="2.5"
+           maxSpeed="27.78"/>
+
+    <route id="R1" edges="E1 E2 E3"/>
+
+    <vehicle id="V1" type="car" route="R1"
+             depart="0" departLane="0" departSpeed="10"
+             speedFactor="0.8"/>
+
+    <vehicle id="V2" type="car" route="R1"
+             depart="3" departLane="0" departSpeed="10"
+             speedFactor="1.0"/>
+
+    <vehicle id="V3" type="car" route="R1"
+             depart="6" departLane="0" departSpeed="10"
+             speedFactor="0.9"/>
+
+    <vehicle id="V4" type="car" route="R1"
+             depart="9" departLane="1" departSpeed="10"
+             speedFactor="1.0"/>
+
+    <vehicle id="V5" type="car" route="R1"
+             depart="12" departLane="1" departSpeed="10"
+             speedFactor="0.7"/>
+
+</routes>
