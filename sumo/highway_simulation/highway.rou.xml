@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<routes>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
 
     <vType id="car"
            vClass="passenger"
            accel="2.6"
            decel="4.5"
            emergencyDecel="9.0"
-           length="5"
+           length="5.0"
            minGap="2.5"
            maxSpeed="27.78"/>
 
     <route id="R1" edges="E1 E2 E3"/>
 
+    <!-- V1: Leading vehicle in Lane 0 -->
     <vehicle id="V1" type="car" route="R1"
-             depart="0" departLane="0" departSpeed="10"
+             depart="0.0" departLane="0" departSpeed="10.0"
              speedFactor="0.8"/>
 
+    <!-- V2: Following vehicle in Lane 0 -->
     <vehicle id="V2" type="car" route="R1"
-             depart="3" departLane="0" departSpeed="10"
+             depart="3.0" departLane="0" departSpeed="10.0"
              speedFactor="1.0"/>
 
+    <!-- V3: Additional following vehicle in Lane 0 -->
     <vehicle id="V3" type="car" route="R1"
-             depart="6" departLane="0" departSpeed="10"
+             depart="6.0" departLane="0" departSpeed="10.0"
              speedFactor="0.9"/>
 
+    <!-- V4: Vehicle in Lane 1 -->
     <vehicle id="V4" type="car" route="R1"
-             depart="9" departLane="1" departSpeed="10"
+             depart="9.0" departLane="1" departSpeed="10.0"
              speedFactor="1.0"/>
 
+    <!-- V5: Vehicle in Lane 1 -->
     <vehicle id="V5" type="car" route="R1"
-             depart="12" departLane="1" departSpeed="10"
+             depart="12.0" departLane="1" departSpeed="10.0"
              speedFactor="0.7"/>
 
 </routes>

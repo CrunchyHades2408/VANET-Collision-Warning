@@ -1,0 +1,6 @@
+experiment,packets_sent,packets_received,pdr_percent,avg_delay_ms,routing_overhead,discovery_time_ms,notes
+Exp 1 - Normal Mobility Sync,0,0,100.0,0.0,0,0.0,5 vehicles synchronized 1:1 without drift
+Exp 2 - Wireless P2P Moving,4,4,100.0,0.841,2,1.123,1-hop direct delivery while vehicles moving
+Exp 3 - Dynamic Multi-Hop AODV,2,2,100.0,5.611,8,4.491,4-hop on-demand discovery across moving nodes V1->V2->V3->V4->V5
+Exp 4 - Mobility Link Failure,1,0,0.0,0.0,1,0.0,"Braking caused headway gap > 100m, link broke, RERR issued"
+Exp 5 - Route Recovery,1,1,100.0,1.964,2,1.123,"Speed restored, vehicles converged < 100m, fresh RREQ succeeded"

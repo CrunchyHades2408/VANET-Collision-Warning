@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.log
+.DS_Store
+Thumbs.db
+
+# Python caches
+.mypy_cache/
+.pytest_cache/
+.matplotlib/
+
+# Node
+node_modules/
+
+# Generated simulation output
+*.netstate.xml
+*.tripinfo.xml
+*.emissions.xml

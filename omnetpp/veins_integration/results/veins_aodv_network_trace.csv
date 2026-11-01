@@ -1,0 +1,48 @@
+timestamp,event,node,packet_id,src,dest,details
+5.0,APP_PACKET_GEN,vehicle_V1,EXP2_P2P_1,10.0.0.1,10.0.0.2,"Generated warning (speed=70.0 km/h, pos=77.1m)"
+5.0,AODV_RREQ_BROADCAST,vehicle_V1,RREQ_1,10.0.0.1,10.0.0.2,Broadcast RREQ for 10.0.0.2 (node at x=77.1m)
+5.000564,AODV_RREQ_RECV,vehicle_V2,RREQ_1,10.0.0.1,10.0.0.2,"Reverse route via vehicle_V1, hops=1"
+5.000564,AODV_RREP_GEN,vehicle_V2,RREP,10.0.0.2,10.0.0.1,Destination reached. Generated RREP at x=28.9m
+5.001123,AODV_RREP_RECV,vehicle_V1,RREP,10.0.0.2,10.0.0.1,"Forward route to 10.0.0.2 via vehicle_V2, hops=1"
+5.001123,AODV_ROUTE_ESTABLISHED,vehicle_V1,RREP,10.0.0.1,10.0.0.2,Route established in 1.123 ms. Releasing buffered packets.
+5.001964,APP_PACKET_DELIVERED,vehicle_V2,EXP2_P2P_1,10.0.0.1,10.0.0.2,"Delivered in 1.964 ms, hops=1, path=vehicle_V1->vehicle_V2"
+7.0,APP_PACKET_GEN,vehicle_V1,EXP2_P2P_2,10.0.0.1,10.0.0.2,"Generated warning (speed=79.7 km/h, pos=119.6m)"
+7.000841,APP_PACKET_DELIVERED,vehicle_V2,EXP2_P2P_2,10.0.0.1,10.0.0.2,"Delivered in 0.841 ms, hops=1, path=vehicle_V1->vehicle_V2"
+9.0,APP_PACKET_GEN,vehicle_V1,EXP2_P2P_3,10.0.0.1,10.0.0.2,"Generated warning (speed=79.8 km/h, pos=163.9m)"
+9.000841,APP_PACKET_DELIVERED,vehicle_V2,EXP2_P2P_3,10.0.0.1,10.0.0.2,"Delivered in 0.841 ms, hops=1, path=vehicle_V1->vehicle_V2"
+11.0,APP_PACKET_GEN,vehicle_V1,EXP2_P2P_4,10.0.0.1,10.0.0.2,"Generated warning (speed=79.6 km/h, pos=208.2m)"
+11.0,AODV_RREQ_BROADCAST,vehicle_V1,RREQ_2,10.0.0.1,10.0.0.2,Broadcast RREQ for 10.0.0.2 (node at x=208.2m)
+11.000564,AODV_RREQ_RECV,vehicle_V2,RREQ_2,10.0.0.1,10.0.0.2,"Reverse route via vehicle_V1, hops=1"
+11.000564,AODV_RREP_GEN,vehicle_V2,RREP,10.0.0.2,10.0.0.1,Destination reached. Generated RREP at x=145.8m
+11.001123,AODV_RREP_RECV,vehicle_V1,RREP,10.0.0.2,10.0.0.1,"Forward route to 10.0.0.2 via vehicle_V2, hops=1"
+11.001123,AODV_ROUTE_ESTABLISHED,vehicle_V1,RREP,10.0.0.1,10.0.0.2,Route established in 1.123 ms. Releasing buffered packets.
+11.001964,APP_PACKET_DELIVERED,vehicle_V2,EXP2_P2P_4,10.0.0.1,10.0.0.2,"Delivered in 1.964 ms, hops=1, path=vehicle_V1->vehicle_V2"
+15.0,APP_PACKET_GEN,vehicle_V1,EXP3_MULTIHOP_1_5,10.0.0.1,10.0.0.5,"Generated warning (speed=79.7 km/h, pos=296.8m)"
+15.0,AODV_RREQ_BROADCAST,vehicle_V1,RREQ_3,10.0.0.1,10.0.0.5,Broadcast RREQ for 10.0.0.5 (node at x=296.8m)
+15.000564,AODV_RREQ_RECV,vehicle_V2,RREQ_3,10.0.0.1,10.0.0.5,"Reverse route via vehicle_V1, hops=1"
+15.001128,AODV_RREQ_RECV,vehicle_V3,RREQ_3,10.0.0.1,10.0.0.5,"Reverse route via vehicle_V2, hops=2"
+15.001692,AODV_RREQ_RECV,vehicle_V4,RREQ_3,10.0.0.1,10.0.0.5,"Reverse route via vehicle_V3, hops=3"
+15.002256,AODV_RREQ_RECV,vehicle_V5,RREQ_3,10.0.0.1,10.0.0.5,"Reverse route via vehicle_V4, hops=4"
+15.002256,AODV_RREP_GEN,vehicle_V5,RREP,10.0.0.5,10.0.0.1,Destination reached. Generated RREP at x=44.1m
+15.002815,AODV_RREP_RECV,vehicle_V4,RREP,10.0.0.5,10.0.0.1,"Forward route to 10.0.0.5 via vehicle_V5, hops=1"
+15.003373,AODV_RREP_RECV,vehicle_V3,RREP,10.0.0.5,10.0.0.1,"Forward route to 10.0.0.5 via vehicle_V4, hops=2"
+15.003932,AODV_RREP_RECV,vehicle_V2,RREP,10.0.0.5,10.0.0.1,"Forward route to 10.0.0.5 via vehicle_V3, hops=3"
+15.004491,AODV_RREP_RECV,vehicle_V1,RREP,10.0.0.5,10.0.0.1,"Forward route to 10.0.0.5 via vehicle_V2, hops=4"
+15.004491,AODV_ROUTE_ESTABLISHED,vehicle_V1,RREP,10.0.0.1,10.0.0.5,Route established in 4.491 ms. Releasing buffered packets.
+15.007856,APP_PACKET_DELIVERED,vehicle_V5,EXP3_MULTIHOP_1_5,10.0.0.1,10.0.0.5,"Delivered in 7.856 ms, hops=4, path=vehicle_V1->vehicle_V2->vehicle_V3->vehicle_V4->vehicle_V5"
+16.0,APP_PACKET_GEN,vehicle_V1,EXP3_MULTIHOP_2_6,10.0.0.1,10.0.0.5,"Generated warning (speed=63.5 km/h, pos=316.5m)"
+16.003365,APP_PACKET_DELIVERED,vehicle_V5,EXP3_MULTIHOP_2_6,10.0.0.1,10.0.0.5,"Delivered in 3.365 ms, hops=4, path=vehicle_V1->vehicle_V2->vehicle_V3->vehicle_V4->vehicle_V5"
+22.0,APP_PACKET_GEN,vehicle_V1,EXP4_MOBILITY_FAIL_7,10.0.0.1,10.0.0.5,"Generated warning (speed=34.6 km/h, pos=368.7m)"
+22.0,AODV_RREQ_BROADCAST,vehicle_V1,RREQ_4,10.0.0.1,10.0.0.5,Broadcast RREQ for 10.0.0.5 (node at x=368.7m)
+22.000564,AODV_RREQ_RECV,vehicle_V2,RREQ_4,10.0.0.1,10.0.0.5,"Reverse route via vehicle_V1, hops=1"
+22.000564,AODV_RREQ_RECV,vehicle_V3,RREQ_4,10.0.0.1,10.0.0.5,"Reverse route via vehicle_V1, hops=1"
+22.000564,AODV_RREQ_RECV,vehicle_V4,RREQ_4,10.0.0.1,10.0.0.5,"Reverse route via vehicle_V1, hops=1"
+32.0,APP_PACKET_GEN,vehicle_V1,EXP5_RECOVERY_8,10.0.0.1,10.0.0.2,"Generated warning (speed=79.6 km/h, pos=549.4m)"
+32.0,AODV_RREQ_BROADCAST,vehicle_V1,RREQ_5,10.0.0.1,10.0.0.2,Broadcast RREQ for 10.0.0.2 (node at x=549.4m)
+32.000564,AODV_RREQ_RECV,vehicle_V2,RREQ_5,10.0.0.1,10.0.0.2,"Reverse route via vehicle_V1, hops=1"
+32.000564,AODV_RREP_GEN,vehicle_V2,RREP,10.0.0.2,10.0.0.1,Destination reached. Generated RREP at x=524.7m
+32.000564,AODV_RREQ_RECV,vehicle_V3,RREQ_5,10.0.0.1,10.0.0.2,"Reverse route via vehicle_V1, hops=1"
+32.000564,AODV_RREQ_RECV,vehicle_V4,RREQ_5,10.0.0.1,10.0.0.2,"Reverse route via vehicle_V1, hops=1"
+32.001123,AODV_RREP_RECV,vehicle_V1,RREP,10.0.0.2,10.0.0.1,"Forward route to 10.0.0.2 via vehicle_V2, hops=1"
+32.001123,AODV_ROUTE_ESTABLISHED,vehicle_V1,RREP,10.0.0.1,10.0.0.2,Route established in 1.123 ms. Releasing buffered packets.
+32.001964,APP_PACKET_DELIVERED,vehicle_V2,EXP5_RECOVERY_8,10.0.0.1,10.0.0.2,"Delivered in 1.964 ms, hops=1, path=vehicle_V1->vehicle_V2"

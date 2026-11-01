@@ -1,0 +1,7 @@
+experiment,packets_sent,packets_received,pdr_percent,avg_delay_ms,min_delay_ms,max_delay_ms,overhead_packets,rreq_count,rrep_count,rerr_count,discovery_time_ms,avg_hop_count
+Exp 1 - Initial Route Discovery,1,1,100.0,7.856,7.856,7.856,8,4,4,0,4.491,4.0
+Exp 2 - Repeated Transmission (Cache Reuse),10,10,100.0,4.713,3.365,7.856,24,12,12,0,4.491,4.0
+Exp 3 - Link Failure & RERR,10,5,50.0,5.162,3.365,7.856,21,12,8,1,4.491,4.0
+Exp 4 - Route Rediscovery After Recovery,5,4,80.0,5.611,3.365,7.856,17,8,8,1,4.491,4.0
+Exp 5 - Multi-Hop Warning Dissemination,5,5,100.0,5.162,3.365,7.856,16,8,8,0,4.491,4.0
+Baseline - Direct Single-Hop (No AODV),10,0,0.0,0.0,0.0,0.0,1,1,0,0,0.0,0.0

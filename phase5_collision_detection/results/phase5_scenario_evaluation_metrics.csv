@@ -1,0 +1,7 @@
+TP,FP,TN,FN,Precision,Recall,F1,FalseAlarmRate,MeanLatency_s,Scenario,WarningsGenerated,WarningsDelivered
+55,0,586,49,1.0,0.5288,0.6918,0.0,1.593,sudden_braking,4,4
+0,0,658,32,1.0,0.0,0.0,0.0,0.0,normal_traffic,0,0
+0,0,641,49,1.0,0.0,0.0,0.0,0.0,safe_following,0,0
+10,0,625,55,1.0,0.1538,0.2667,0.0,0.45,high_speed_approach,1,1
+0,0,628,62,1.0,0.0,0.0,0.0,0.0,different_lane,0,0
+15,0,625,50,1.0,0.2308,0.375,0.0,0.7,risk_recovery,1,1
