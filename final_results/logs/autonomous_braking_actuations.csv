@@ -1,0 +1,6 @@
+timestamp,event_id,vehicle_id,sender_id,risk_level,initial_speed_mps,initial_speed_kmh,target_speed_mps,target_speed_kmh,duration_s,expected_decel_mps2,ttc_s,gap_m
+17.702,EVENT_17.7_V2_V1,V2,V1,MODERATE,15.13,54.48,10.59,38.12,4.0,1.14,5.87,32.22
+18.7008,EVENT_18.7_V2_V1,V2,V1,HIGH,11.79,42.43,4.71,16.96,3.5,2.02,3.93,26.07
+18.902,EVENT_18.9_V3_V2,V3,V2,MODERATE,19.07,68.65,13.35,48.06,4.0,1.43,5.96,47.52
+19.8008,EVENT_19.8_V2_V1,V2,V1,MODERATE,9.56,34.43,6.69,24.08,4.0,0.72,4.05,19.35
+22.9008,EVENT_22.9_V3_V2,V3,V2,MODERATE,11.58,41.68,8.1,29.16,4.0,0.87,5.24,22.66

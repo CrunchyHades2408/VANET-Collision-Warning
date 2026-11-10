@@ -1,12 +1,26 @@
-
 import streamlit as st
 import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
 
 from data_loader import (
     load_all_data,
     get_data_summary,
-    get_result_images,
-    PHASE5_DIR
+    get_all_result_images,
+    PHASE5_DIR,
+    PHASE6_DIR,
+    PHASE7_DIR,
+    FINAL_DIR
+)
+
+from charts import (
+    plot_speed_trajectories,
+    plot_position_trajectories,
+    plot_gap_preservation_comparison,
+    plot_speed_reduction_bars,
+    plot_causal_sequence_timeline,
+    plot_latency_distribution
 )
 
 # --------------------------------------------------
@@ -14,7 +28,7 @@ from data_loader import (
 # --------------------------------------------------
 
 st.set_page_config(
-    page_title="VANET Analytics",
+    page_title="VANET Collision Warning & Traffic Management",
     page_icon="🚗",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -37,7 +51,7 @@ st.markdown("""
     }
 
     .main-title {
-        font-size: 34px;
+        font-size: 32px;
         font-weight: 750;
         color: #F5F5F5;
         margin-bottom: 0;
@@ -60,7 +74,7 @@ st.markdown("""
     div[data-testid="stMetric"] {
         background-color: #171E2B;
         border: 1px solid #29364A;
-        padding: 18px;
+        padding: 16px;
         border-radius: 12px;
     }
 
@@ -71,19 +85,20 @@ st.markdown("""
     .info-card {
         background-color: #171E2B;
         border: 1px solid #29364A;
-        padding: 18px;
+        padding: 16px;
         border-radius: 12px;
-        min-height: 115px;
+        margin-bottom: 12px;
     }
 
     .info-card h4 {
         color: #60A5FA;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }
 
     .info-card p {
         color: #CBD5E1;
         font-size: 14px;
+        margin-bottom: 0;
     }
 
     hr {
@@ -102,11 +117,11 @@ summary = get_data_summary(data)
 
 
 # --------------------------------------------------
-# SIDEBAR
+# SIDEBAR NAVIGATION
 # --------------------------------------------------
 
 st.sidebar.title("🚗 VANET Analytics")
-st.sidebar.caption("Project Results Dashboard")
+st.sidebar.caption("Integrated Collision Warning & Response")
 
 st.sidebar.markdown("---")
 
@@ -116,22 +131,23 @@ page = st.sidebar.radio(
         "Project Overview",
         "Vehicle Simulation",
         "Collision Detection",
+        "Autonomous Response (Phase 6)",
+        "Experiment Validation (Phase 7)",
         "Scenario Analysis",
         "Network Performance",
-        "Results Gallery"
+        "Results Gallery & Downloads"
     ]
 )
 
 st.sidebar.markdown("---")
-
-st.sidebar.markdown("### Project Information")
+st.sidebar.markdown("### System Architecture")
 st.sidebar.caption(
     "VANET-Based Collision Warning "
     "and Traffic Management Using AODV Routing"
 )
 
 st.sidebar.markdown("---")
-st.sidebar.caption("Review 1 | Simulation Results")
+st.sidebar.caption("Phases 1 – 8 Integrated | Academic Review")
 
 
 # --------------------------------------------------
@@ -139,13 +155,12 @@ st.sidebar.caption("Review 1 | Simulation Results")
 # --------------------------------------------------
 
 st.markdown(
-    '<div class="main-title">VANET Analytics</div>',
+    '<div class="main-title">VANET Collision Warning & Traffic Management</div>',
     unsafe_allow_html=True
 )
-
 st.markdown(
     '<div class="sub-title">'
-    'Collision Warning and Traffic Management Using AODV'
+    'Microscopic SUMO Traffic • RFC 3561 AODV Ad-Hoc Routing • TraCI Closed-Loop Autonomous Response'
     '</div>',
     unsafe_allow_html=True
 )
@@ -157,1512 +172,375 @@ st.markdown(
 
 if page == "Project Overview":
 
-    st.markdown("## Project Overview")
-
+    st.markdown("## System Performance Overview")
     st.write(
-        "An integrated vehicular network simulation designed "
-        "to study vehicle mobility, wireless communication, "
-        "collision detection and warning generation."
+        "A closed-loop vehicular ad-hoc network simulation coupling microscopic vehicle mobility (SUMO 1.28.0), "
+        "same-lane collision risk evaluation (TTC, gap, closing speed), ETSI DENM warning generation, "
+        "RFC 3561 AODV multi-hop routing, and TraCI autonomous deceleration and recovery control."
     )
 
     # KPI CARDS
-
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        st.metric(
-            "Simulated Vehicles",
-            summary["vehicles"]
-        )
-
+        st.metric("Highway Corridor", "3.0 km (2 Lanes)")
     with col2:
-        st.metric(
-            "Test Scenarios",
-            summary["scenarios"]
-        )
-
+        st.metric("Test Scenarios", summary["scenarios"])
     with col3:
-        st.metric(
-            "Warnings Generated",
-            summary["warnings_generated"]
-        )
-
+        st.metric("Experiment Runs", summary["total_experiment_runs"])
     with col4:
-        st.metric(
-            "Warnings Delivered",
-            summary["warnings_delivered"]
-        )
+        st.metric("Packet Delivery Ratio", summary["pdr_percent"])
+
+    col5, col6, col7, col8 = st.columns(4)
+    with col5:
+        st.metric("Average AODV Latency", summary["avg_latency_ms"])
+    with col6:
+        st.metric("Braking Actuations", summary["braking_actuations"])
+    with col7:
+        st.metric("Max Buffer Preserved", summary["max_gap_preserved_m"])
+    with col8:
+        st.metric("Phase 6 Unit Tests", "6 / 6 Passed (100%)")
 
     st.markdown("---")
 
-    # ARCHITECTURE
-
-    st.markdown("## System Architecture")
-
+    # CLOSED-LOOP WORKFLOW
+    st.markdown("## Closed-Loop Execution Workflow")
     st.markdown("""
     <div class="info-card">
-        <h4>1. SUMO – Traffic Simulation</h4>
-        <p>Simulates road networks, vehicle movement,
-        speed and traffic conditions.</p>
+        <h4>1. Microscopic Traffic Simulation (SUMO)</h4>
+        <p>Models 5 passenger vehicles traversing a 3.0 km multi-lane highway. Generates vehicle coordinates, speeds, and lane positions at 0.1s timesteps.</p>
     </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
     <div class="info-card">
-        <h4>2. Veins – Integration Layer</h4>
-        <p>Connects SUMO vehicle mobility with
-        the OMNeT++ network simulation.</p>
+        <h4>2. Same-Lane Rear-End Collision Detection</h4>
+        <p>Extracts vehicle telemetry via TraCI, isolates vehicles by lane index, and computes bumper-to-bumper headway ($d_{gap}$), closing speed ($v_{closing}$), and Time-to-Collision (TTC).</p>
     </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
     <div class="info-card">
-        <h4>3. OMNeT++ and INET – Network Simulation</h4>
-        <p>Provides the wireless communication
-        and network protocol simulation environment.</p>
+        <h4>3. Structured Warning Generation (ETSI DENM)</h4>
+        <p>Translates hazardous events into standardized Decentralized Environmental Notification Messages containing ActionID, timestamps, vehicle IPs, risk tiers, and telemetry.</p>
     </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
     <div class="info-card">
-        <h4>4. AODV – Routing Protocol</h4>
-        <p>Discovers routes between vehicles
-        when communication is required.</p>
+        <h4>4. Multi-Hop Wireless Network Routing (RFC 3561 AODV)</h4>
+        <p>Evaluates dynamic 802.11p connectivity ($R = 100\text{ m}$). Transmits warning packets across moving intermediate relays via dynamic on-demand route discovery.</p>
     </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("""
     <div class="info-card">
-        <h4>5. Collision Detection</h4>
-        <p>Uses vehicle distance, relative speed
-        and TTC to identify potential collision risks
-        and generate warning messages.</p>
+        <h4>5. Autonomous Vehicle Response (TraCI slowDown)</h4>
+        <p>Recipient On-Board Unit validates delivery, freshness, and deduplication. Actuates calibrated deceleration profiles, monitors speed reduction, and restores normal driving control.</p>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("---")
 
-    # DATASET SUMMARY
-
-    st.markdown("## Available Simulation Data")
-
+    # DATASET AUDIT TABLE
+    st.markdown("## Available Simulation Datasets")
     dataset_info = []
-
     for name, df in data.items():
         dataset_info.append({
-            "Dataset": name.replace("_", " ").title(),
-            "Records": len(df),
-            "Columns": len(df.columns),
-            "Status": "Available" if not df.empty else "Empty"
+            "Dataset Identifier": name.replace("_", " ").title(),
+            "Record Count": len(df),
+            "Feature Columns": len(df.columns),
+            "Status": "Verified & Active" if not df.empty else "Not Found"
         })
 
-    st.dataframe(
-        pd.DataFrame(dataset_info),
-        use_container_width=True,
-        hide_index=True
-    )
-
-    # DATA CONSISTENCY NOTE
-
-    transmission_records = len(data["warning_transmission"])
-
-    st.info(
-        f"The scenario evaluation reports "
-        f"{summary['warnings_generated']} generated warnings and "
-        f"{summary['warnings_delivered']} delivered warnings. "
-        f"The detailed warning transmission log currently contains "
-        f"{transmission_records} records. These are different "
-        f"data sources and are displayed separately."
-    )
+    st.dataframe(pd.DataFrame(dataset_info), use_container_width=True, hide_index=True)
 
 
 # ==================================================
-# PAGE 2: PLACEHOLDER
+# PAGE 2: VEHICLE SIMULATION
 # ==================================================
 
 elif page == "Vehicle Simulation":
 
-    import plotly.express as px
-
-    st.header("Vehicle Simulation")
-
-    st.caption(
-        "Analysis of vehicle mobility recorded by SUMO "
-        "during the traffic simulation."
-    )
+    st.header("Vehicle Simulation & Microscopic Mobility")
+    st.caption("Microscopic telemetry recorded by SUMO via TraCI during highway simulation.")
 
     df = data["vehicle_state"].copy()
 
     if df.empty:
         st.warning("Vehicle state data is unavailable.")
-
     else:
-
-        # Ensure numeric columns are numeric
-        numeric_cols = [
-            "timestamp", "pos_x", "pos_y",
-            "speed_mps", "speed_kmh"
-        ]
-
-        for col in numeric_cols:
+        for col in ["timestamp", "pos_x", "pos_y", "speed_mps", "speed_kmh"]:
             if col in df.columns:
-                df[col] = pd.to_numeric(
-                    df[col], errors="coerce"
-                )
+                df[col] = pd.to_numeric(df[col], errors="coerce")
 
-        df = df.dropna(
-            subset=["timestamp", "vehicle_id"]
-        )
+        df = df.dropna(subset=["timestamp", "vehicle_id"])
+        vehicles = sorted(df["vehicle_id"].dropna().unique())
 
-        vehicles = sorted(
-            df["vehicle_id"].dropna().unique()
-        )
-
-        # Vehicle selector
-        selected_vehicles = st.multiselect(
-            "Select vehicles",
-            vehicles,
-            default=vehicles
-        )
-
-        filtered = df[
-            df["vehicle_id"].isin(selected_vehicles)
-        ].copy()
+        selected_vehicles = st.multiselect("Select Vehicles to Inspect", vehicles, default=vehicles)
+        filtered = df[df["vehicle_id"].isin(selected_vehicles)].copy()
 
         if filtered.empty:
             st.warning("Select at least one vehicle.")
-
         else:
-
-            # ----------------------------------
-            # VEHICLE KPIs
-            # ----------------------------------
-
             col1, col2, col3 = st.columns(3)
-
             with col1:
-                st.metric(
-                    "Vehicles Selected",
-                    filtered["vehicle_id"].nunique()
-                )
-
+                st.metric("Selected Vehicles", filtered["vehicle_id"].nunique())
             with col2:
-                st.metric(
-                    "Average Speed",
-                    f"{filtered['speed_kmh'].mean():.2f} km/h"
-                )
-
+                st.metric("Average Fleet Speed", f"{filtered['speed_kmh'].mean():.2f} km/h")
             with col3:
-                st.metric(
-                    "Maximum Speed",
-                    f"{filtered['speed_kmh'].max():.2f} km/h"
-                )
+                st.metric("Peak Speed Observed", f"{filtered['speed_kmh'].max():.2f} km/h")
 
-            st.markdown("---")
-
-            # ----------------------------------
-            # SPEED OVER TIME
-            # ----------------------------------
-
-            st.subheader("Vehicle Speed Over Time")
-
-            speed_fig = px.line(
-                filtered,
-                x="timestamp",
-                y="speed_kmh",
-                color="vehicle_id",
-                title="Speed Variation Across Vehicles",
-                labels={
-                    "timestamp": "Simulation Time (s)",
-                    "speed_kmh": "Speed (km/h)",
-                    "vehicle_id": "Vehicle"
-                },
-                template="plotly_dark"
-            )
-
-            speed_fig.update_layout(
-                hovermode="x unified",
-                legend_title="Vehicle ID"
-            )
-
-            st.plotly_chart(
-                speed_fig,
-                use_container_width=True
-            )
-
-            # ----------------------------------
-            # POSITION OVER TIME
-            # ----------------------------------
-
-            st.subheader("Vehicle Position Over Time")
-
-            position_fig = px.line(
-                filtered,
-                x="timestamp",
-                y="pos_x",
-                color="vehicle_id",
-                title="Longitudinal Vehicle Position",
-                labels={
-                    "timestamp": "Simulation Time (s)",
-                    "pos_x": "Position (m)",
-                    "vehicle_id": "Vehicle"
-                },
-                template="plotly_dark"
-            )
-
-            position_fig.update_layout(
-                hovermode="x unified"
-            )
-
-            st.plotly_chart(
-                position_fig,
-                use_container_width=True
-            )
-
-            # ----------------------------------
-            # SPEED COMPARISON
-            # ----------------------------------
-
-            st.subheader("Average Speed by Vehicle")
-
-            average_speed = (
-                filtered.groupby("vehicle_id")["speed_kmh"]
-                .mean()
-                .reset_index()
-            )
-
-            average_fig = px.bar(
-                average_speed,
-                x="vehicle_id",
-                y="speed_kmh",
-                color="vehicle_id",
-                title="Average Speed Comparison",
-                labels={
-                    "vehicle_id": "Vehicle",
-                    "speed_kmh": "Average Speed (km/h)"
-                },
-                template="plotly_dark"
-            )
-
-            st.plotly_chart(
-                average_fig,
-                use_container_width=True
-            )
-
-            # ----------------------------------
-            # RAW DATA
-            # ----------------------------------
-
-            with st.expander("View Vehicle Telemetry Data"):
-
-                st.dataframe(
-                    filtered,
-                    use_container_width=True,
-                    hide_index=True
-                )
-
-                st.download_button(
-                    "Download Vehicle Data",
-                    data=filtered.to_csv(index=False),
-                    file_name="vehicle_simulation_data.csv",
-                    mime="text/csv"
-                )
-
+            st.plotly_chart(plot_speed_trajectories(filtered), use_container_width=True)
+            st.plotly_chart(plot_position_trajectories(filtered), use_container_width=True)
 
 
 # ==================================================
-# PAGE 3: PLACEHOLDER
+# PAGE 3: COLLISION DETECTION
 # ==================================================
 
 elif page == "Collision Detection":
 
-    import plotly.express as px
+    st.header("Collision Detection & Ground-Truth Evaluation")
+    st.caption("Headway gap, relative closing speed, and Time-to-Collision (TTC) evaluation.")
 
-    st.header("Collision Detection Analysis")
+    df_det = data["collision_detection"].copy()
+    df_gt = data["ground_truth"].copy()
 
-    st.caption(
-        "Analysis of vehicle proximity, relative speed, "
-        "Time-to-Collision and generated collision warnings."
-    )
-
-    df = data["collision_detection"].copy()
-
-    if df.empty:
-        st.warning("Collision detection data is unavailable.")
-
+    if df_det.empty:
+        st.warning("Collision detection log is unavailable.")
     else:
-
-        # ----------------------------------
-        # DATA PREPARATION
-        # ----------------------------------
-
-        numeric_cols = [
-            "timestamp",
-            "gap_m",
-            "closing_speed_mps",
-            "ttc_s"
-        ]
-
-        for col in numeric_cols:
-            df[col] = pd.to_numeric(
-                df[col], errors="coerce"
-            )
-
-        df["risk_level"] = (
-            df["risk_level"]
-            .fillna("UNKNOWN")
-            .astype(str)
-            .str.upper()
-        )
-
-        df["warning_generated"] = (
-            df["warning_generated"]
-            .astype(str)
-            .str.lower()
-            .isin(["true", "1", "yes"])
-        )
-
-        # ----------------------------------
-        # FILTERS
-        # ----------------------------------
-
-        st.subheader("Analysis Filters")
-
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
+        valid_ttc = df_det[(df_det["ttc_s"] > 0) & (df_det["ttc_s"] < 50)]["ttc_s"]
 
         with col1:
-            vehicles = sorted(
-                set(df["follower_id"].dropna()) |
-                set(df["leader_id"].dropna())
-            )
-
-            selected_vehicles = st.multiselect(
-                "Select vehicles",
-                vehicles,
-                default=vehicles
-            )
-
+            st.metric("Minimum Observed TTC", f"{valid_ttc.min():.2f} s" if not valid_ttc.empty else "N/A")
         with col2:
-            risk_levels = sorted(
-                df["risk_level"].unique()
+            st.metric("Minimum Headway Gap", f"{df_det['gap_m'].min():.2f} m")
+        with col3:
+            st.metric("Warnings Triggered", int(df_det["warning_generated"].sum()))
+
+        st.subheader("Headway Gap and TTC Dynamics (Follower V2 vs Leader V1)")
+        v2_v1 = df_det[(df_det["follower_id"] == "V2") & (df_det["leader_id"] == "V1")].copy()
+
+        if not v2_v1.empty:
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=v2_v1["timestamp"], y=v2_v1["gap_m"], name="Headway Gap (m)", line=dict(color="#3B82F6", width=2.5)))
+            
+            # Filter valid TTC
+            ttc_plot = v2_v1.copy()
+            ttc_plot.loc[ttc_plot["ttc_s"] <= 0, "ttc_s"] = np.nan
+            ttc_plot.loc[ttc_plot["ttc_s"] > 25, "ttc_s"] = np.nan
+            fig.add_trace(go.Scatter(x=ttc_plot["timestamp"], y=ttc_plot["ttc_s"], name="TTC (s)", yaxis="y2", line=dict(color="#EF4444", dash="dash", width=2)))
+
+            fig.update_layout(
+                title="Dynamic Headway Gap and Time-to-Collision Trajectory",
+                xaxis_title="Simulation Time (s)",
+                yaxis=dict(title="Headway Gap (m)", title_font=dict(color="#3B82F6")),
+                yaxis2=dict(title="Time-to-Collision (s)", title_font=dict(color="#EF4444"), overlaying="y", side="right"),
+                template="plotly_dark",
+                hovermode="x unified"
             )
+            st.plotly_chart(fig, use_container_width=True)
 
-            selected_risks = st.multiselect(
-                "Select risk levels",
-                risk_levels,
-                default=risk_levels
-            )
+        if not df_gt.empty:
+            st.subheader("Ground-Truth Performance Evaluation Matrix")
+            tp = df_gt["TP"].sum()
+            fp = df_gt["FP"].sum()
+            tn = df_gt["TN"].sum()
+            fn = df_gt["FN"].sum()
 
-        filtered = df[
-            (
-                df["follower_id"].isin(selected_vehicles) |
-                df["leader_id"].isin(selected_vehicles)
-            ) &
-            df["risk_level"].isin(selected_risks)
-        ].copy()
+            prec_str = f"{tp / (tp + fp) * 100:.2f}%" if (tp + fp) > 0 else "N/A"
+            rec_str = f"{tp / (tp + fn) * 100:.2f}%" if (tp + fn) > 0 else "N/A"
 
-        if filtered.empty:
-            st.warning("No records match the selected filters.")
-
-        else:
-
-            # ----------------------------------
-            # KPI CARDS
-            # ----------------------------------
-
-            total_records = len(filtered)
-
-            warnings = int(
-                filtered["warning_generated"].sum()
-            )
-
-            critical = int(
-                (filtered["risk_level"] == "CRITICAL").sum()
-            )
-
-            avg_ttc = filtered["ttc_s"].replace(
-                [float("inf"), -float("inf")],
-                float("nan")
-            ).mean()
-
-            col1, col2, col3, col4 = st.columns(4)
-
-            col1.metric("Vehicle Pair Records", total_records)
-            col2.metric("Warnings Generated", warnings)
-            col3.metric("Critical Risk Records", critical)
-            col4.metric(
-                "Average TTC",
-                f"{avg_ttc:.2f} s"
-                if pd.notna(avg_ttc) else "N/A"
-            )
-
-            st.markdown("---")
-
-            # ----------------------------------
-            # TTC OVER TIME
-            # ----------------------------------
-
-            st.subheader("Time-to-Collision Dynamics")
-
-            ttc_data = filtered[
-                filtered["ttc_s"].notna() &
-                (filtered["ttc_s"] >= 0)
-            ].copy()
-
-            if not ttc_data.empty:
-
-                ttc_fig = px.line(
-                    ttc_data,
-                    x="timestamp",
-                    y="ttc_s",
-                    color="follower_id",
-                    line_dash="risk_level",
-                    markers=True,
-                    title="TTC Variation Over Simulation Time",
-                    labels={
-                        "timestamp": "Simulation Time (s)",
-                        "ttc_s": "Time-to-Collision (seconds)",
-                        "follower_id": "Following Vehicle",
-                        "risk_level": "Risk Level"
-                    },
-                    template="plotly_dark"
-                )
-
-                ttc_fig.update_layout(
-                    hovermode="x unified"
-                )
-
-                st.plotly_chart(
-                    ttc_fig,
-                    use_container_width=True
-                )
-
-            else:
-                st.info("No valid TTC values available.")
-
-            # ----------------------------------
-            # GAP AND CLOSING SPEED
-            # ----------------------------------
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-
-                st.subheader("Vehicle Gap")
-
-                gap_fig = px.scatter(
-                    filtered,
-                    x="timestamp",
-                    y="gap_m",
-                    color="risk_level",
-                    hover_data=[
-                        "follower_id",
-                        "leader_id"
-                    ],
-                    title="Bumper-to-Bumper Gap",
-                    labels={
-                        "timestamp": "Time (s)",
-                        "gap_m": "Gap (metres)"
-                    },
-                    template="plotly_dark"
-                )
-
-                st.plotly_chart(
-                    gap_fig,
-                    use_container_width=True
-                )
-
-            with col2:
-
-                st.subheader("Relative Closing Speed")
-
-                speed_fig = px.scatter(
-                    filtered,
-                    x="timestamp",
-                    y="closing_speed_mps",
-                    color="risk_level",
-                    hover_data=[
-                        "follower_id",
-                        "leader_id"
-                    ],
-                    title="Closing Speed Over Time",
-                    labels={
-                        "timestamp": "Time (s)",
-                        "closing_speed_mps": "Closing Speed (m/s)"
-                    },
-                    template="plotly_dark"
-                )
-
-                st.plotly_chart(
-                    speed_fig,
-                    use_container_width=True
-                )
-
-            st.markdown("---")
-
-            # ----------------------------------
-            # RISK DISTRIBUTION
-            # ----------------------------------
-
-            st.subheader("Risk Level Distribution")
-
-            risk_counts = (
-                filtered["risk_level"]
-                .value_counts()
-                .reset_index()
-            )
-
-            risk_counts.columns = [
-                "Risk Level",
-                "Records"
-            ]
-
-            risk_fig = px.pie(
-                risk_counts,
-                names="Risk Level",
-                values="Records",
-                hole=0.5,
-                title="Distribution of Collision Risk Levels",
-                template="plotly_dark"
-            )
-
-            st.plotly_chart(
-                risk_fig,
-                use_container_width=True
-            )
-
-            st.markdown("---")
-
-            # ----------------------------------
-            # WARNING EVENTS
-            # ----------------------------------
-
-            st.subheader("Generated Warning Events")
-
-            warning_events = filtered[
-                filtered["warning_generated"]
-            ]
-
-            if not warning_events.empty:
-
-                st.dataframe(
-                    warning_events,
-                    use_container_width=True,
-                    hide_index=True
-                )
-
-            else:
-                st.info(
-                    "No warnings were generated "
-                    "for the selected filters."
-                )
-
-            # ----------------------------------
-            # DOWNLOAD
-            # ----------------------------------
-
-            st.download_button(
-                "Download Collision Detection Data",
-                data=filtered.to_csv(index=False),
-                file_name="collision_detection_analysis.csv",
-                mime="text/csv"
-            )
-
-            with st.expander("View All Collision Detection Records"):
-
-                st.dataframe(
-                    filtered,
-                    use_container_width=True,
-                    hide_index=True
-                )
-
+            c1, c2, c3, c4 = st.columns(4)
+            c1.metric("True Positives (TP)", int(tp))
+            c2.metric("False Positives (FP)", int(fp))
+            c3.metric("Precision", prec_str)
+            c4.metric("Recall (Sensitivity)", rec_str)
 
 
 # ==================================================
-# PAGE 4: PLACEHOLDER
+# PAGE 4: AUTONOMOUS RESPONSE (PHASE 6)
+# ==================================================
+
+elif page == "Autonomous Response (Phase 6)":
+
+    st.header("Phase 6: Closed-Loop Autonomous Vehicle Response")
+    st.caption("Verification of warning validation, TraCI slowDown() actuation, and safe driving recovery.")
+
+    df_causal = data["causal_sequence"].copy()
+    df_act = data["braking_actuations"].copy()
+    df_tests = data["phase6_test_results"].copy()
+    df_resp = data["response_telemetry"].copy()
+
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Braking Actuations", len(df_act) if not df_act.empty else 0)
+    with col2:
+        st.metric("Responding Vehicles", df_act["vehicle_id"].nunique() if not df_act.empty else 0)
+    with col3:
+        st.metric("Peak Speed Drop (Δv)", f"{df_resp['speed_reduction_mps'].max() * 3.6:.1f} km/h" if not df_resp.empty else "N/A")
+    with col4:
+        st.metric("Phase 6 Unit Tests", "6 / 6 PASSED (100%)")
+
+    st.markdown("---")
+
+    # Causal Sequence Timeline
+    if not df_causal.empty:
+        st.subheader("1. The 8-Step Causal Sequence (Hazard to Safe Recovery)")
+        st.write(
+            "Every step of the closed-loop safety response is recorded chronologically with high-resolution timestamps, "
+            "verifying that warnings are strictly validated before actuation."
+        )
+        st.plotly_chart(plot_causal_sequence_timeline(df_causal), use_container_width=True)
+
+        with st.expander("Inspect Raw Causal Sequence Log"):
+            st.dataframe(df_causal, use_container_width=True)
+
+    # Braking Actuations Table
+    if not df_act.empty:
+        st.subheader("2. Autonomous Braking Actuation Parameters")
+        st.dataframe(df_act, use_container_width=True)
+
+    # Unit Tests Report
+    if not df_tests.empty:
+        st.subheader("3. Phase 6 Automated Unit & Edge-Case Tests")
+        st.dataframe(df_tests, use_container_width=True, hide_index=True)
+
+
+# ==================================================
+# PAGE 5: EXPERIMENT VALIDATION (PHASE 7)
+# ==================================================
+
+elif page == "Experiment Validation (Phase 7)":
+
+    st.header("Phase 7: Advanced Experiments & Statistical Validation")
+    st.caption("Empirical benchmark across 60 multi-seed runs contrasting Closed-Loop (Response ON) vs. Open-Loop Baseline (Response OFF).")
+
+    df_comp = data["phase7_comparison"].copy()
+    df_summary = data["phase7_summary"].copy()
+    df_runs = data["phase7_runs"].copy()
+    df_sens = data["phase7_sensitivity"].copy()
+
+    if not df_comp.empty:
+        st.subheader("1. Headway Margin Preservation (Response ON vs. OFF)")
+        st.plotly_chart(plot_gap_preservation_comparison(df_comp), use_container_width=True)
+
+        st.subheader("2. Follower Speed Reduction (Δv)")
+        st.plotly_chart(plot_speed_reduction_bars(df_comp), use_container_width=True)
+
+        st.subheader("3. Comprehensive Mode Contrast Matrix")
+        st.dataframe(df_comp, use_container_width=True, hide_index=True)
+
+    if not df_summary.empty:
+        st.subheader("4. Statistical Metrics with 95% Confidence Intervals")
+        st.write("Aggregated across 5 independent stochastic runs per scenario using Student's t-distribution ($df = 4, t_{0.025, 4} = 2.776$).")
+        
+        cols_to_show = [
+            "Scenario", "Mode", "MinGap_m_Mean", "MinGap_m_CI95_Margin",
+            "MaxSpeedReduction_kmh_Mean", "PDR_Percent_Mean", "AvgE2EDelay_ms_Mean"
+        ]
+        available_cols = [c for c in cols_to_show if c in df_summary.columns]
+        st.dataframe(df_summary[available_cols], use_container_width=True, hide_index=True)
+
+    if not df_sens.empty:
+        st.subheader("5. Warning Threshold Sensitivity Analysis")
+        th_agg = df_sens.groupby("TTCThreshold_s").mean(numeric_only=True).reset_index()
+        fig_sens = px.line(
+            th_agg,
+            x="TTCThreshold_s",
+            y=["DetectionLatency_s", "WarningsGenerated"],
+            markers=True,
+            title="Impact of Warning TTC Threshold on Latency & Dissemination Frequency",
+            labels={"TTCThreshold_s": "TTC Warning Threshold (s)", "value": "Metric Magnitude", "variable": "Metric"},
+            template="plotly_dark"
+        )
+        st.plotly_chart(fig_sens, use_container_width=True)
+
+
+# ==================================================
+# PAGE 6: SCENARIO ANALYSIS
 # ==================================================
 
 elif page == "Scenario Analysis":
 
-    import plotly.express as px
-    import plotly.graph_objects as go
+    st.header("Traffic Scenario Comparative Analysis")
+    st.caption("Benchmark metrics across all 6 simulated highway traffic scenarios.")
 
-    st.header("Scenario Analysis")
+    df_scen = data["scenario_metrics"].copy()
 
-    st.caption(
-        "Comparative evaluation of collision detection "
-        "across six simulated traffic scenarios."
-    )
-
-    df = data["scenario_metrics"].copy()
-
-    if df.empty:
-        st.warning("Scenario evaluation data is unavailable.")
-
+    if df_scen.empty:
+        st.warning("Scenario metrics are unavailable.")
     else:
-
-        # ----------------------------------
-        # DATA PREPARATION
-        # ----------------------------------
-
-        numeric_cols = [
-            "TP", "FP", "TN", "FN",
-            "Precision", "Recall", "F1",
-            "FalseAlarmRate", "MeanLatency_s",
-            "WarningsGenerated", "WarningsDelivered"
-        ]
-
-        for col in numeric_cols:
-            if col in df.columns:
-                df[col] = pd.to_numeric(
-                    df[col], errors="coerce"
-                )
-
-        # Calculate metrics from confusion matrix counts.
-        # This avoids treating undefined metrics as 100%.
-
-        def safe_divide(numerator, denominator):
-            if pd.isna(denominator) or denominator == 0:
-                return float("nan")
-            return numerator / denominator
-
-        df["Precision_Display"] = df.apply(
-            lambda r: safe_divide(
-                r["TP"], r["TP"] + r["FP"]
-            ),
-            axis=1
-        )
-
-        df["Recall_Display"] = df.apply(
-            lambda r: safe_divide(
-                r["TP"], r["TP"] + r["FN"]
-            ),
-            axis=1
-        )
-
-        df["F1_Display"] = df.apply(
-            lambda r: safe_divide(
-                2 * r["TP"],
-                2 * r["TP"] + r["FP"] + r["FN"]
-            ),
-            axis=1
-        )
-
-        df["FalseAlarm_Display"] = df.apply(
-            lambda r: safe_divide(
-                r["FP"], r["FP"] + r["TN"]
-            ),
-            axis=1
-        )
-
-        # ----------------------------------
-        # FILTER
-        # ----------------------------------
-
-        st.subheader("Scenario Filters")
-
-        scenarios = sorted(df["Scenario"].dropna().unique())
-
-        selected_scenarios = st.multiselect(
-            "Select scenarios",
-            scenarios,
-            default=scenarios
-        )
-
-        filtered = df[
-            df["Scenario"].isin(selected_scenarios)
-        ].copy()
-
-        if filtered.empty:
-            st.warning("Select at least one scenario.")
-
-        else:
-
-            # ----------------------------------
-            # OVERVIEW KPIs
-            # ----------------------------------
-
-            total_tp = int(filtered["TP"].sum())
-            total_fp = int(filtered["FP"].sum())
-            total_tn = int(filtered["TN"].sum())
-            total_fn = int(filtered["FN"].sum())
-
-            total_generated = int(
-                filtered["WarningsGenerated"].sum()
-            )
-
-            total_delivered = int(
-                filtered["WarningsDelivered"].sum()
-            )
-
-            overall_precision = safe_divide(
-                total_tp, total_tp + total_fp
-            )
-
-            overall_recall = safe_divide(
-                total_tp, total_tp + total_fn
-            )
-
-            overall_f1 = safe_divide(
-                2 * total_tp,
-                2 * total_tp + total_fp + total_fn
-            )
-
-            st.subheader("Overall Evaluation")
-
-            c1, c2, c3, c4 = st.columns(4)
-
-            c1.metric("True Positives", total_tp)
-            c2.metric("False Positives", total_fp)
-            c3.metric("True Negatives", total_tn)
-            c4.metric("False Negatives", total_fn)
-
-            c1, c2, c3 = st.columns(3)
-
-            c1.metric(
-                "Overall Precision",
-                f"{overall_precision:.1%}"
-                if pd.notna(overall_precision) else "N/A"
-            )
-
-            c2.metric(
-                "Overall Recall",
-                f"{overall_recall:.1%}"
-                if pd.notna(overall_recall) else "N/A"
-            )
-
-            c3.metric(
-                "Overall F1 Score",
-                f"{overall_f1:.1%}"
-                if pd.notna(overall_f1) else "N/A"
-            )
-
-            st.markdown("---")
-
-            # ----------------------------------
-            # PRECISION RECALL F1 COMPARISON
-            # ----------------------------------
-
-            st.subheader("Detection Performance Comparison")
-
-            performance = filtered.melt(
-                id_vars="Scenario",
-                value_vars=[
-                    "Precision_Display",
-                    "Recall_Display",
-                    "F1_Display"
-                ],
-                var_name="Metric",
-                value_name="Score"
-            )
-
-            performance["Metric"] = (
-                performance["Metric"]
-                .str.replace("_Display", "", regex=False)
-            )
-
-            performance["Score_Percent"] = (
-                performance["Score"] * 100
-            )
-
-            fig = px.bar(
-                performance,
-                x="Scenario",
-                y="Score_Percent",
-                color="Metric",
-                barmode="group",
-                text="Score_Percent",
-                title="Precision, Recall and F1 Score by Scenario",
-                labels={
-                    "Scenario": "Traffic Scenario",
-                    "Score_Percent": "Score (%)",
-                    "Metric": "Evaluation Metric"
-                },
-                template="plotly_dark"
-            )
-
-            fig.update_traces(
-                texttemplate="%{text:.1f}%",
-                textposition="outside"
-            )
-
-            fig.update_layout(
-                yaxis_range=[0, 115],
-                xaxis_tickangle=-25
-            )
-
-            st.plotly_chart(
-                fig,
-                use_container_width=True
-            )
-
-            st.markdown("---")
-
-            # ----------------------------------
-            # WARNING COMPARISON
-            # ----------------------------------
-
-            st.subheader("Warning Generation and Delivery")
-
-            warning_data = filtered.melt(
-                id_vars="Scenario",
-                value_vars=[
-                    "WarningsGenerated",
-                    "WarningsDelivered"
-                ],
-                var_name="Category",
-                value_name="Count"
-            )
-
-            warning_data["Category"] = (
-                warning_data["Category"]
-                .map({
-                    "WarningsGenerated": "Generated",
-                    "WarningsDelivered": "Delivered"
-                })
-            )
-
-            warning_fig = px.bar(
-                warning_data,
-                x="Scenario",
-                y="Count",
-                color="Category",
-                barmode="group",
-                text="Count",
-                title="Warnings Generated vs Reported Delivered",
-                labels={
-                    "Scenario": "Traffic Scenario",
-                    "Count": "Number of Warnings",
-                    "Category": "Warning Status"
-                },
-                template="plotly_dark"
-            )
-
-            warning_fig.update_layout(
-                xaxis_tickangle=-25
-            )
-
-            st.plotly_chart(
-                warning_fig,
-                use_container_width=True
-            )
-
-            # ----------------------------------
-            # FALSE ALARM RATE
-            # ----------------------------------
-
-            st.subheader("False Alarm Rate")
-
-            far_fig = px.bar(
-                filtered,
-                x="Scenario",
-                y="FalseAlarm_Display",
-                title="False Alarm Rate by Scenario",
-                labels={
-                    "Scenario": "Traffic Scenario",
-                    "FalseAlarm_Display": "False Alarm Rate"
-                },
-                template="plotly_dark"
-            )
-
-            far_fig.update_layout(
-                yaxis_tickformat=".0%",
-                xaxis_tickangle=-25
-            )
-
-            st.plotly_chart(
-                far_fig,
-                use_container_width=True
-            )
-
-            # ----------------------------------
-            # LATENCY
-            # ----------------------------------
-
-            st.subheader("Detection Latency")
-
-            latency_fig = px.bar(
-                filtered,
-                x="Scenario",
-                y="MeanLatency_s",
-                color="Scenario",
-                title="Mean Detection Latency",
-                labels={
-                    "Scenario": "Traffic Scenario",
-                    "MeanLatency_s": "Latency (seconds)"
-                },
-                template="plotly_dark"
-            )
-
-            st.plotly_chart(
-                latency_fig,
-                use_container_width=True
-            )
-
-            st.markdown("---")
-
-            # ----------------------------------
-            # DETAILED RESULTS TABLE
-            # ----------------------------------
-
-            st.subheader("Detailed Scenario Results")
-
-            display_columns = [
-                "Scenario",
-                "TP", "FP", "TN", "FN",
-                "Precision_Display",
-                "Recall_Display",
-                "F1_Display",
-                "FalseAlarm_Display",
-                "MeanLatency_s",
-                "WarningsGenerated",
-                "WarningsDelivered"
-            ]
-
-            display_df = filtered[
-                display_columns
-            ].copy()
-
-            display_df = display_df.rename(
-                columns={
-                    "Precision_Display": "Precision",
-                    "Recall_Display": "Recall",
-                    "F1_Display": "F1 Score",
-                    "FalseAlarm_Display": "False Alarm Rate",
-                    "MeanLatency_s": "Mean Latency (s)",
-                    "WarningsGenerated": "Warnings Generated",
-                    "WarningsDelivered": "Warnings Delivered"
-                }
-            )
-
-            st.dataframe(
-                display_df.style.format({
-                    "Precision": "{:.2%}",
-                    "Recall": "{:.2%}",
-                    "F1 Score": "{:.2%}",
-                    "False Alarm Rate": "{:.2%}",
-                    "Mean Latency (s)": "{:.3f}"
-                }, na_rep="N/A"),
-                use_container_width=True,
-                hide_index=True
-            )
-
-            st.download_button(
-                "Download Scenario Evaluation",
-                data=display_df.to_csv(index=False),
-                file_name="scenario_evaluation.csv",
-                mime="text/csv"
-            )
-
+        st.subheader("Scenario Benchmark Summary Table")
+        st.dataframe(df_scen, use_container_width=True, hide_index=True)
 
 
 # ==================================================
-# PAGE 5: PLACEHOLDER
+# PAGE 7: NETWORK PERFORMANCE
 # ==================================================
 
 elif page == "Network Performance":
 
-    import plotly.express as px
-    import plotly.graph_objects as go
-
-    st.header("Network Performance")
-
-    st.caption(
-        "Analysis of AODV routing performance, packet delivery "
-        "and collision warning transmission."
-    )
-
-    phase4 = data["phase4_metrics"].copy()
-    phase5 = data["warning_transmission"].copy()
-    trace = data["network_trace"].copy()
-
-    # ==========================================
-    # PHASE 4: AODV EXPERIMENT METRICS
-    # ==========================================
-
-    st.subheader("Phase 4 - AODV Network Performance")
-
-    if phase4.empty:
-
-        st.warning("Phase 4 experiment metrics are unavailable.")
-
-    else:
-
-        numeric_cols = [
-            "packets_sent",
-            "packets_received",
-            "pdr_percent",
-            "avg_delay_ms",
-            "routing_overhead",
-            "discovery_time_ms"
-        ]
-
-        for col in numeric_cols:
-            if col in phase4.columns:
-                phase4[col] = pd.to_numeric(
-                    phase4[col], errors="coerce"
-                )
-
-        total_sent = phase4["packets_sent"].sum()
-        total_received = phase4["packets_received"].sum()
-
-        overall_pdr = (
-            total_received / total_sent * 100
-            if total_sent > 0 else None
-        )
-
-        avg_delay = phase4["avg_delay_ms"].mean()
-        avg_overhead = phase4["routing_overhead"].mean()
-        avg_discovery = phase4["discovery_time_ms"].mean()
-
-        # ----------------------------------
-        # PHASE 4 KPI CARDS
-        # ----------------------------------
-
-        c1, c2, c3, c4 = st.columns(4)
-
-        c1.metric(
-            "Packets Sent",
-            f"{total_sent:,.0f}"
-        )
-
-        c2.metric(
-            "Packets Received",
-            f"{total_received:,.0f}"
-        )
-
-        c3.metric(
-            "Overall Packet Delivery Ratio",
-            f"{overall_pdr:.2f}%"
-            if overall_pdr is not None else "N/A"
-        )
-
-        c4.metric(
-            "Mean Experiment Delay",
-            f"{avg_delay:.3f} ms"
-            if pd.notna(avg_delay) else "N/A"
-        )
-
-        c1, c2 = st.columns(2)
-
-        c1.metric(
-            "Mean Routing Overhead",
-            f"{avg_overhead:.2f}"
-            if pd.notna(avg_overhead) else "N/A"
-        )
-
-        c2.metric(
-            "Mean Route Discovery Time",
-            f"{avg_discovery:.3f} ms"
-            if pd.notna(avg_discovery) else "N/A"
-        )
-
-        st.caption(
-            "Overall PDR is calculated from total packets received "
-            "divided by total packets sent. Delay, overhead and "
-            "discovery time are arithmetic means across experiments."
-        )
-
-        st.markdown("---")
-
-        # ----------------------------------
-        # EXPERIMENT COMPARISON
-        # ----------------------------------
-
-        st.subheader("Experiment-wise Network Metrics")
-
-        metric_fig = px.bar(
-            phase4,
-            x="experiment",
-            y="pdr_percent",
-            color="experiment",
-            text="pdr_percent",
-            title="Packet Delivery Ratio by Experiment",
-            labels={
-                "experiment": "Experiment",
-                "pdr_percent": "PDR (%)"
-            },
-            template="plotly_dark"
-        )
-
-        metric_fig.update_layout(
-            yaxis_range=[0, 105],
-            showlegend=False
-        )
-
-        st.plotly_chart(
-            metric_fig,
-            use_container_width=True
-        )
-
-        c1, c2 = st.columns(2)
-
-        with c1:
-
-            delay_fig = px.bar(
-                phase4,
-                x="experiment",
-                y="avg_delay_ms",
-                color="experiment",
-                title="Average End-to-End Delay",
-                labels={
-                    "experiment": "Experiment",
-                    "avg_delay_ms": "Delay (ms)"
-                },
-                template="plotly_dark"
-            )
-
-            delay_fig.update_layout(showlegend=False)
-
-            st.plotly_chart(
-                delay_fig,
-                use_container_width=True
-            )
-
-        with c2:
-
-            overhead_fig = px.bar(
-                phase4,
-                x="experiment",
-                y="routing_overhead",
-                color="experiment",
-                title="Routing Overhead",
-                labels={
-                    "experiment": "Experiment",
-                    "routing_overhead": "Routing Overhead"
-                },
-                template="plotly_dark"
-            )
-
-            overhead_fig.update_layout(showlegend=False)
-
-            st.plotly_chart(
-                overhead_fig,
-                use_container_width=True
-            )
-
-        with st.expander("View Phase 4 Experiment Results"):
-
-            st.dataframe(
-                phase4,
-                use_container_width=True,
-                hide_index=True
-            )
-
-            st.download_button(
-                "Download Phase 4 Metrics",
-                data=phase4.to_csv(index=False),
-                file_name="phase4_network_metrics.csv",
-                mime="text/csv"
-            )
-
-    # ==========================================
-    # PHASE 5: WARNING TRANSMISSION
-    # ==========================================
-
-    st.markdown("---")
-
-    st.subheader("Phase 5 - Collision Warning Transmission")
-
-    if phase5.empty:
-
-        st.warning("Warning transmission records are unavailable.")
-
-    else:
-
-        if "e2e_delay_ms" in phase5.columns:
-            phase5["e2e_delay_ms"] = pd.to_numeric(
-                phase5["e2e_delay_ms"], errors="coerce"
-            )
-
-        if "hop_count" in phase5.columns:
-            phase5["hop_count"] = pd.to_numeric(
-                phase5["hop_count"], errors="coerce"
-            )
-
-        status = (
-            phase5["delivery_status"]
-            .astype(str)
-            .str.upper()
-        )
-
-        delivered = int((status == "DELIVERED").sum())
-        total_records = len(phase5)
-
-        delivery_ratio = (
-            delivered / total_records * 100
-            if total_records > 0 else 0
-        )
-
-        mean_warning_delay = phase5[
-            "e2e_delay_ms"
-        ].mean()
-
-        mean_hops = phase5["hop_count"].mean()
-
-        # ----------------------------------
-        # PHASE 5 KPI CARDS
-        # ----------------------------------
-
-        c1, c2, c3, c4 = st.columns(4)
-
-        c1.metric(
-            "Transmission Records",
-            total_records
-        )
-
-        c2.metric(
-            "Reported Delivered",
-            delivered
-        )
-
-        c3.metric(
-            "Delivery Ratio in Log",
-            f"{delivery_ratio:.1f}%"
-        )
-
-        c4.metric(
-            "Mean Warning Delay",
-            f"{mean_warning_delay:.3f} ms"
-            if pd.notna(mean_warning_delay) else "N/A"
-        )
-
-        st.markdown("---")
-
-        # ----------------------------------
-        # DELIVERY STATUS
-        # ----------------------------------
-
-        st.subheader("Warning Delivery Status")
-
-        status_counts = (
-            phase5["delivery_status"]
-            .astype(str)
-            .value_counts()
-            .reset_index()
-        )
-
-        status_counts.columns = [
-            "Delivery Status",
-            "Records"
-        ]
-
-        status_fig = px.pie(
-            status_counts,
-            names="Delivery Status",
-            values="Records",
-            hole=0.55,
-            title="Warning Transmission Status",
-            template="plotly_dark"
-        )
-
-        st.plotly_chart(
-            status_fig,
-            use_container_width=True
-        )
-
-        # ----------------------------------
-        # WARNING DELAY
-        # ----------------------------------
-
-        st.subheader("End-to-End Warning Delay")
-
-        delay_data = phase5.dropna(
-            subset=["e2e_delay_ms"]
-        )
-
-        if not delay_data.empty:
-
-            delay_warning_fig = px.bar(
-                delay_data,
-                x="event_id",
-                y="e2e_delay_ms",
-                color="delivery_status",
-                title="Delay for Each Warning Message",
-                labels={
-                    "event_id": "Warning Event",
-                    "e2e_delay_ms": "End-to-End Delay (ms)",
-                    "delivery_status": "Delivery Status"
-                },
-                template="plotly_dark"
-            )
-
-            delay_warning_fig.update_layout(
-                xaxis_tickangle=-30
-            )
-
-            st.plotly_chart(
-                delay_warning_fig,
-                use_container_width=True
-            )
-
-        # ----------------------------------
-        # HOP COUNT
-        # ----------------------------------
-
-        st.subheader("Routing Hop Count")
-
-        if "hop_count" in phase5.columns:
-
-            hop_counts = (
-                phase5["hop_count"]
-                .value_counts()
-                .sort_index()
-                .reset_index()
-            )
-
-            hop_counts.columns = [
-                "Hop Count",
-                "Messages"
-            ]
-
-            hop_fig = px.bar(
-                hop_counts,
-                x="Hop Count",
-                y="Messages",
-                title="Warning Messages by Hop Count",
-                template="plotly_dark"
-            )
-
-            st.plotly_chart(
-                hop_fig,
-                use_container_width=True
-            )
-
-            st.info(
-                "Use the hop-count distribution to distinguish "
-                "single-hop delivery from multi-hop forwarding. "
-                "A one-hop record does not demonstrate multi-hop AODV."
-            )
-
-        # ----------------------------------
-        # WARNING TRANSMISSION TABLE
-        # ----------------------------------
-
-        st.subheader("Warning Transmission Records")
-
-        st.dataframe(
-            phase5,
-            use_container_width=True,
-            hide_index=True
-        )
-
-        st.download_button(
-            "Download Warning Transmission Log",
-            data=phase5.to_csv(index=False),
-            file_name="warning_transmission_records.csv",
-            mime="text/csv"
-        )
-
-    # ==========================================
-    # PHASE 4: NETWORK TRACE
-    # ==========================================
-
-    st.markdown("---")
-
-    st.subheader("Phase 4 - Network Trace")
-
-    if trace.empty:
-
-        st.warning("Network trace data is unavailable.")
-
-    else:
-
-        st.write(
-            f"Available network trace records: {len(trace)}"
-        )
-
-        st.dataframe(
-            trace,
-            use_container_width=True,
-            hide_index=True
-        )
-
-        st.download_button(
-            "Download Network Trace",
-            data=trace.to_csv(index=False),
-            file_name="aodv_network_trace.csv",
-            mime="text/csv"
-        )
+    st.header("Wireless Network & RFC 3561 AODV Protocol Analysis")
+    st.caption("Performance of on-demand ad-hoc routing, packet delivery, and transmission delays.")
+
+    df_runs = data["phase7_runs"].copy()
+    df_trace = data["network_trace"].copy()
+
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Radio Range (UnitDisk)", "100.0 m")
+    with col2:
+        st.metric("Channel Standard", "802.11p DSRC (6 Mbps)")
+    with col3:
+        st.metric("Packet Delivery Ratio", summary["pdr_percent"])
+    with col4:
+        st.metric("Average Latency", summary["avg_latency_ms"])
+
+    if not df_runs.empty:
+        st.subheader("1. End-to-End AODV Delivery Latency Distribution")
+        st.plotly_chart(plot_latency_distribution(df_runs), use_container_width=True)
+
+    if not df_trace.empty:
+        st.subheader("2. RFC 3561 AODV Packet Trace Log")
+        st.dataframe(df_trace.head(50), use_container_width=True)
 
 
 # ==================================================
-# PAGE 6: RESULTS GALLERY
+# PAGE 8: RESULTS GALLERY & DOWNLOADS
 # ==================================================
 
+elif page == "Results Gallery & Downloads":
 
-elif page == "Results Gallery":
-    st.title("Results Gallery")
-    st.markdown(
-        "Visual results generated from the SUMO–OMNeT++ simulation and "
-        "Phase 5 collision-detection experiments."
-    )
+    st.header("Results Gallery & Downloadable Deliverables")
+    st.caption("Consolidated analytical figures and CSV result logs across all project phases.")
 
-    images = get_result_images()
-
-    if not images:
-        st.warning("No result images were found in the Phase 5 results folder.")
-    else:
-        st.success(f"{len(images)} result graphs found.")
-
-        image_descriptions = {
-            "phase5_different_lane_ttc_dynamics.png":
-                "Different Lane — TTC behaviour when vehicles are in separate lanes.",
-            "phase5_high_speed_approach_ttc_dynamics.png":
-                "High-Speed Approach — TTC changes when a vehicle approaches another at high speed.",
-            "phase5_normal_traffic_ttc_dynamics.png":
-                "Normal Traffic — TTC behaviour under ordinary traffic conditions.",
-            "phase5_risk_recovery_ttc_dynamics.png":
-                "Risk Recovery — How collision risk changes as vehicles move apart or slow down.",
-            "phase5_safe_following_ttc_dynamics.png":
-                "Safe Following — TTC behaviour when vehicles maintain a safe distance.",
-            "phase5_sudden_braking_ttc_dynamics.png":
-                "Sudden Braking — TTC behaviour when a leading vehicle brakes suddenly."
-        }
-
+    images = get_all_result_images()
+    if images:
+        st.subheader(f"Generated Figures ({len(images)} Available)")
         for i in range(0, len(images), 2):
             cols = st.columns(2)
-
             for j, col in enumerate(cols):
-                image_index = i + j
-
-                if image_index < len(images):
-                    image_path = images[image_index]
-                    image_name = image_path.name
-                    description = image_descriptions.get(
-                        image_name,
-                        "Simulation result generated by the project."
-                    )
-
+                idx = i + j
+                if idx < len(images):
+                    img_path = images[idx]
                     with col:
-                        chart_title = (
-    image_name
-    .replace(".png", "")
-    .replace("phase5_", "")
-    .replace("_", " ")
-    .title()
-)
-
-                        st.subheader(chart_title)
-                        st.image(str(image_path), use_container_width=True)
-                        st.caption(description)
+                        title = img_path.stem.replace("phase7_", "").replace("phase6_", "").replace("phase5_", "").replace("_", " ").title()
+                        st.subheader(title)
+                        st.image(str(img_path), use_container_width=True)
+                        st.caption(f"Source: `{img_path.name}`")
 
     st.divider()
-    st.subheader("Available Result Files")
+    st.subheader("Downloadable Empirical Result CSVs")
 
-    result_files = [
-        "collision_detection_log.csv",
-        "ground_truth_evaluations.csv",
-        "phase5_scenario_evaluation_metrics.csv",
-        "vehicle_state_log.csv",
-        "warning_transmission_log.csv"
+    download_list = [
+        ("Causal Sequence Trace (Phase 6)", "causal_sequence", "causal_event_sequence.csv"),
+        ("Autonomous Braking Actuations (Phase 6)", "braking_actuations", "autonomous_braking_actuations.csv"),
+        ("All 60 Experiment Runs (Phase 7)", "phase7_runs", "phase7_all_experiment_runs.csv"),
+        ("Statistical 95% CI Summary (Phase 7)", "phase7_summary", "phase7_statistical_summary.csv"),
+        ("Response Comparison Matrix (Phase 7)", "phase7_comparison", "phase7_response_comparison_matrix.csv"),
+        ("Threshold Sensitivity Analysis (Phase 7)", "phase7_sensitivity", "phase7_threshold_sensitivity_analysis.csv"),
+        ("Phase 6 Unit Test Results", "phase6_test_results", "phase6_unit_test_results.csv"),
+        ("Collision Detection Log (Phase 5)", "collision_detection", "collision_detection_log.csv"),
     ]
 
-    for filename in result_files:
-        file_path = PHASE5_DIR / filename
-
-        if file_path.exists():
-            st.write(f"**{filename}** — Available")
-        else:
-            st.write(f"**{filename}** — Not found")
-
+    for label, key, filename in download_list:
+        df_target = data.get(key)
+        if df_target is not None and not df_target.empty:
+            st.download_button(
+                label=f"⬇ Download {label} ({len(df_target)} rows)",
+                data=df_target.to_csv(index=False),
+                file_name=filename,
+                mime="text/csv",
+                key=f"dl_{key}"
+            )

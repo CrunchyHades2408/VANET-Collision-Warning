@@ -1,0 +1,7 @@
+TestName,Description,Status
+test_successful_warning_receipt_triggers_braking,"Verify that when a warning is confirmed DELIVERED to the target vehicle,",PASSED
+test_warning_generation_without_delivery_does_not_trigger_braking,"Verify that a warning with delivery_status=""GENERATED"" or ""TRANSMITTED""",PASSED
+test_duplicate_warning_does_not_trigger_repeated_braking,Verify that receiving a duplicate warning for the same vehicle,PASSED
+test_expired_warning_does_not_trigger_braking,Verify that a warning older than max_warning_age (2.0s) is rejected as EXPIRED.,PASSED
+test_missing_recipient_vehicle_is_handled_safely,"Verify that if the recipient vehicle has already exited the road network,",PASSED
+test_normal_traffic_without_warning_does_not_trigger_braking,"Verify that under normal driving conditions where no warning is generated,",PASSED

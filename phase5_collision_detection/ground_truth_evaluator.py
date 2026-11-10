@@ -122,10 +122,15 @@ class GroundTruthEvaluator:
         tn = df["TN"].sum()
         fn = df["FN"].sum()
 
-        precision = tp / (tp + fp) if (tp + fp) > 0 else 1.0
-        recall = tp / (tp + fn) if (tp + fn) > 0 else 1.0
-        f1 = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 1.0
-        far = fp / (fp + tn) if (fp + tn) > 0 else 0.0
+        # Handle zero denominators: report NaN / N/A, not 1.0 (100%)
+        precision = (tp / (tp + fp)) if (tp + fp) > 0 else float("nan")
+        recall = (tp / (tp + fn)) if (tp + fn) > 0 else (1.0 if tn > 0 and fp == 0 else float("nan"))
+        if not math.isnan(precision) and not math.isnan(recall) and (precision + recall) > 0:
+            f1 = (2 * precision * recall) / (precision + recall)
+        else:
+            f1 = float("nan")
+
+        far = (fp / (fp + tn)) if (fp + tn) > 0 else 0.0
         mean_latency = (
             sum(self.detection_latencies) / len(self.detection_latencies)
             if self.detection_latencies else 0.0
@@ -136,9 +141,9 @@ class GroundTruthEvaluator:
             "FP": int(fp),
             "TN": int(tn),
             "FN": int(fn),
-            "Precision": round(precision, 4),
-            "Recall": round(recall, 4),
-            "F1": round(f1, 4),
+            "Precision": round(precision, 4) if not math.isnan(precision) else float("nan"),
+            "Recall": round(recall, 4) if not math.isnan(recall) else float("nan"),
+            "F1": round(f1, 4) if not math.isnan(f1) else float("nan"),
             "FalseAlarmRate": round(far, 4),
             "MeanLatency_s": round(mean_latency, 3)
         }

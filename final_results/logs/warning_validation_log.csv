@@ -1,0 +1,6 @@
+is_valid,status,reason,warning_id,recipient_id,validation_time
+True,VALID,Warning verified successfully and accepted for autonomous actuation,EVENT_17.7_V2_V1,V2,17.701964
+True,VALID,Warning verified successfully and accepted for autonomous actuation,EVENT_18.7_V2_V1,V2,18.700841333333333
+True,VALID,Warning verified successfully and accepted for autonomous actuation,EVENT_18.9_V3_V2,V3,18.901964
+True,VALID,Warning verified successfully and accepted for autonomous actuation,EVENT_19.8_V2_V1,V2,19.800841333333334
+True,VALID,Warning verified successfully and accepted for autonomous actuation,EVENT_22.9_V3_V2,V3,22.900841333333332

@@ -1,0 +1,7 @@
+Scenario,Baseline_MinGap_m,ClosedLoop_MinGap_m,Gap_Preserved_m,Baseline_BrakingActions,ClosedLoop_BrakingActions,Follower_Speed_Reduction_kmh,Avg_Braking_Response_ms,PDR_Percent,Avg_Latency_ms
+sudden_braking,14.17,15.4,1.23,0,5,27.66,2.0,100.0,1.29
+normal_traffic,61.51,61.51,0.0,0,0,0.0,,100.0,
+safe_following,61.51,61.51,0.0,0,0,0.0,,100.0,
+high_speed_approach,20.89,23.83,2.94,0,1,17.11,2.0,100.0,1.964
+different_lane,12.71,12.71,0.0,0,0,0.0,,100.0,
+risk_recovery,22.99,25.86,2.86,0,1,18.69,2.0,100.0,1.964

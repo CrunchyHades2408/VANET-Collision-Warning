@@ -37,6 +37,7 @@ class StructuredWarningMessage:
     ttc_s: float
     lane_id: str
     payload_bytes: int = 256
+    delivery_status: str = "GENERATED"
 
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)

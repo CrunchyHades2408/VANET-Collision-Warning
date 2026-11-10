@@ -1,0 +1,10 @@
+Scenario,RunID,Seed,ResponseEnabled,TTCThreshold_s,TP,FP,TN,FN,Precision,Recall,F1,FalseAlarmRate,DetectionLatency_s,MinTTC_s,MeanRiskTTC_s,MinGap_m,MaxClosingSpeed_mps,RiskEventsCount,BrakingActionsCount,RespondingVehiclesCount,MaxSpeedReduction_kmh,BrakingResponseTime_ms,WarningsGenerated,WarningsDelivered,PDR_Percent,PacketLoss_Percent,AvgE2EDelay_ms,MinE2EDelay_ms,MaxE2EDelay_ms,AvgHopCount,RoutingOverhead,NetworkModel
+sudden_braking,1,42,True,3.0,82,0,645,23,1.0,0.781,0.877,0.0,2.445,3.28,4.95,15.22,8.72,82,5,2,27.97,2.0,5,5,100.0,0.0,1.29,0.841,1.964,1.0,5,Python RFC 3561 AODV Discrete-Event
+sudden_braking,1,101,True,3.0,83,0,646,21,1.0,0.7981,0.8877,0.0,2.458,3.28,4.96,15.13,8.9,83,5,2,27.97,2.0,5,5,100.0,0.0,1.29,0.841,1.964,1.0,5,Python RFC 3561 AODV Discrete-Event
+sudden_braking,1,202,True,3.0,81,0,651,18,1.0,0.8182,0.9,0.0,2.246,3.3,5.04,15.94,8.25,81,5,2,26.42,2.0,5,5,100.0,0.0,1.29,0.841,1.964,1.0,5,Python RFC 3561 AODV Discrete-Event
+sudden_braking,1,42,True,4.0,82,0,645,23,1.0,0.781,0.877,0.0,2.445,3.28,4.95,15.22,8.72,82,5,2,27.97,2.0,5,5,100.0,0.0,1.29,0.841,1.964,1.0,5,Python RFC 3561 AODV Discrete-Event
+sudden_braking,1,101,True,4.0,83,0,646,21,1.0,0.7981,0.8877,0.0,2.458,3.28,4.96,15.13,8.9,83,5,2,27.97,2.0,5,5,100.0,0.0,1.29,0.841,1.964,1.0,5,Python RFC 3561 AODV Discrete-Event
+sudden_braking,1,202,True,4.0,81,0,651,18,1.0,0.8182,0.9,0.0,2.246,3.3,5.04,15.94,8.25,81,5,2,26.42,2.0,5,5,100.0,0.0,1.29,0.841,1.964,1.0,5,Python RFC 3561 AODV Discrete-Event
+sudden_braking,1,42,True,5.0,82,0,645,23,1.0,0.781,0.877,0.0,2.445,3.28,4.95,15.22,8.72,82,5,2,27.97,2.0,5,5,100.0,0.0,1.29,0.841,1.964,1.0,5,Python RFC 3561 AODV Discrete-Event
+sudden_braking,1,101,True,5.0,83,0,646,21,1.0,0.7981,0.8877,0.0,2.458,3.28,4.96,15.13,8.9,83,5,2,27.97,2.0,5,5,100.0,0.0,1.29,0.841,1.964,1.0,5,Python RFC 3561 AODV Discrete-Event
+sudden_braking,1,202,True,5.0,81,0,651,18,1.0,0.8182,0.9,0.0,2.246,3.3,5.04,15.94,8.25,81,5,2,26.42,2.0,5,5,100.0,0.0,1.29,0.841,1.964,1.0,5,Python RFC 3561 AODV Discrete-Event
