@@ -5,8 +5,8 @@ Road traffic accidents often stem from delayed driver reaction to imminent colli
 
 ## 2. Key Features
 
-| Feature | Description |
-|---------|-------------|
+| Feature | 
+|---------|
 | **Collision‑risk detection** – Time‑to‑collision (TTC), bumper‑to‑bumper gap and relative closing speed computed from SUMO vehicle states. |
 | **Warning generation** – Structured warning messages (ID, sender/receiver, risk metrics, timestamp). |
 | **Python‑based AODV routing** – Store‑and‑forward message propagation using a lightweight AODV implementation written in Python. |
